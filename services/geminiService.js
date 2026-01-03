@@ -97,8 +97,9 @@ export const extractTranscript = async (videoUrl) => {
         const promptText = `Use the integrated video tool to watch this video. DO NOT use the Python interpreter, shell commands, or Google Search. Provide a full verbatim transcript in English based only on the video content. Video URL: ${videoUrl}`;
         const combinedPrompt = promptText;
 
-        // Execute Gemini CLI - let it choose the best model for video processing
+        // Execute Gemini CLI - using gemini-2.5-flash-lite as requested
         const args = [
+            '-m', 'gemini-2.5-flash-lite',
             '-y', // Auto-approve
             '--output-format', 'text',
             combinedPrompt
