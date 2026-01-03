@@ -8,6 +8,7 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { logger } from '../utils/logger.js';
 import { extractYouTubeId } from '../utils/validators.js';
+import { GoogleGenerativeAI } from '@google/generative-ai';
 
 const GEMINI_CLI = process.env.GEMINI_CLI_PATH || 'gemini';
 const PHASE1_TIMEOUT = 600000; // 10 minutes for video processing
@@ -73,13 +74,16 @@ const executeGeminiCommand = (args, stdinInput = null, timeoutMs = 180000) => {
 
 /**
  * Phase 1: Extract transcript from YouTube video
- * Uses gemini-3-flash-preview with --output to save as VideoID.txt
+ * Supports two sources: Gemini API (AI-analyzed) or TranscriptAPI.com (fast raw transcript)
+ * @param {string} videoUrl - YouTube video URL
+ * @param {string} source - 'gemini' or 'transcriptapi' (defaults to 'gemini')
  */
-export const extractTranscript = async (videoUrl) => {
-    logger.phase(1, 'Extracting transcript from YouTube video');
+export const extractTranscript = async (videoUrl, source = 'gemini') => {
+    logger.phase(1, `Extracting transcript from YouTube video (${source.toUpperCase()})`);
     logger.info(`Video URL: ${videoUrl}`);
 
     const tempDir = path.join(process.cwd(), 'temp');
+    let transcriptPath;
 
     try {
         // Ensure temp directory exists
@@ -91,51 +95,104 @@ export const extractTranscript = async (videoUrl) => {
             throw new Error('Invalid YouTube URL - could not extract video ID');
         }
 
-        const transcriptPath = path.join(tempDir, `${videoId}.txt`);
+        transcriptPath = path.join(tempDir, `${videoId}.txt`);
 
-        // Optimized prompt - force use of integrated video tool
-        const promptText = `Use the integrated video tool to watch this video. DO NOT use the Python interpreter, shell commands, or Google Search. Provide a full verbatim transcript in English based only on the video content. Video URL: ${videoUrl}`;
-        const combinedPrompt = promptText;
-
-        // Execute Gemini CLI - using gemini-2.5-flash-lite as requested
-        const args = [
-            '-m', 'gemini-2.5-flash-lite',
-            '-y', // Auto-approve
-            '--output-format', 'text',
-            combinedPrompt
-        ];
-
-        const { stdout, stderr } = await executeGeminiCommand(args, null, PHASE1_TIMEOUT);
-
-        // Gemini saves the file in the current directory, check both locations
-        const currentDirPath = path.join(process.cwd(), `${videoId}.txt`);
-        let transcript;
-
-        // Check if Gemini created the file in current directory
-        try {
-            await fs.access(currentDirPath);
-            // File exists in current directory, read and move it to temp
-            transcript = await fs.readFile(currentDirPath, 'utf-8');
-            await fs.writeFile(transcriptPath, transcript, 'utf-8');
-            await fs.unlink(currentDirPath); // Remove from current directory
-            logger.step(`Moved transcript from root to temp/${videoId}.txt`);
-        } catch {
-            // File not in current directory, check temp directory
-            try {
-                await fs.access(transcriptPath);
-                transcript = await fs.readFile(transcriptPath, 'utf-8');
-            } catch {
-                // Gemini didn't create the file, use stdout instead
-                transcript = stdout;
-                await fs.writeFile(transcriptPath, transcript, 'utf-8');
-                logger.step(`Saved transcript from stdout to temp/${videoId}.txt`);
-            }
+        // Route to appropriate transcript source
+        if (source === 'transcriptapi') {
+            return await extractViaTranscriptAPI(videoUrl, videoId, transcriptPath);
+        } else {
+            return await extractViaGemini(videoUrl, videoId, transcriptPath);
         }
+
+    } catch (error) {
+        logger.error('Transcript extraction failed', error);
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+};
+
+/**
+ * Extract transcript via TranscriptAPI.com
+ */
+const extractViaTranscriptAPI = async (videoUrl, videoId, transcriptPath) => {
+    const { fetchTranscriptFromAPI } = await import('./transcriptApiService.js');
+
+    const result = await fetchTranscriptFromAPI(videoUrl);
+
+    if (!result.success) {
+        return result;
+    }
+
+    // Save transcript to file
+    await fs.writeFile(transcriptPath, result.transcript, 'utf-8');
+    logger.step(`Saved transcript to temp/${videoId}.txt`);
+
+    return {
+        success: true,
+        transcript: result.transcript,
+        transcriptPath
+    };
+};
+
+/**
+ * Extract transcript via Gemini API (AI-analyzed structured notes)
+ */
+const extractViaGemini = async (videoUrl, videoId, transcriptPath) => {
+    try {
+        // Initialize Gemini API
+        if (!process.env.GEMINI_API_KEY) {
+            throw new Error('GEMINI_API_KEY not found in environment variables');
+        }
+        const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
+        // Use user-requested model
+        const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash-lite" });
+
+        logger.info('Sending request to Gemini API (Direct Video Access)...');
+
+        // Use the validated structure with fileData
+        logger.info(`Starting Gemini API request for model: gemini-2.5-flash-lite...`);
+        const apiStartTime = Date.now();
+
+        // Create a timeout promise (5 minutes for video processing)
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('Gemini API request timed out after 5 minutes')), 300000);
+        });
+
+        // Race between API call and timeout
+        const result = await Promise.race([
+            model.generateContent([
+                {
+                    fileData: {
+                        mimeType: "video/mp4",
+                        fileUri: videoUrl
+                    }
+                },
+                {
+                    text: "Analyze this video and extract a comprehensive set of structured notes. Organize the output using Markdown headers for main topics, bullet points for key insights, and include specific quotes or data points mentioned. Focus on actionable takeaways. Constraint: Keep the total response under 2,000 words to ensure precision for the next step."
+                },
+            ]),
+            timeoutPromise
+        ]);
+
+        logger.info('Gemini API request sent successfully. Waiting for response stream/completion...');
+        const response = await result.response;
+        const apiEndTime = Date.now();
+        logger.success(`Gemini API responded in ${((apiEndTime - apiStartTime) / 1000).toFixed(2)}s`);
+
+        let transcript = response.text();
+        logger.info(`Received processed content (${transcript.length} characters)`);
 
         // VALIDATION: Check for valid transcript
         if (!transcript || transcript.trim().length < 100) {
             throw new Error(`Transcript too short or invalid (${transcript?.trim().length || 0} characters)`);
         }
+
+        // Save transcript to file (to be compatible with Phase 2 expectations)
+        await fs.writeFile(transcriptPath, transcript.trim(), 'utf-8');
+        logger.step(`Saved transcript to temp/${videoId}.txt`);
 
         // Check for error messages or refusals
         const refusalPhrases = [
@@ -177,7 +234,7 @@ export const extractTranscript = async (videoUrl) => {
         };
 
     } catch (error) {
-        logger.error('Transcript extraction failed', error);
+        logger.error('Gemini API extraction failed', error);
 
         return {
             success: false,

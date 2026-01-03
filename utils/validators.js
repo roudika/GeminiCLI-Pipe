@@ -41,6 +41,14 @@ export const validateProcessVideoRequest = (body) => {
         errors.push('Invalid YouTube URL format');
     }
 
+    // Validate transcriptSource if provided
+    if (body.transcriptSource) {
+        const validSources = ['gemini', 'transcriptapi'];
+        if (!validSources.includes(body.transcriptSource)) {
+            errors.push(`Invalid transcriptSource. Must be one of: ${validSources.join(', ')}`);
+        }
+    }
+
     return {
         valid: errors.length === 0,
         errors

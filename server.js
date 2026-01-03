@@ -77,12 +77,13 @@ app.post('/api/process-video', authenticate, async (req, res) => {
             });
         }
 
-        const { videoUrl } = req.body;
+        const { videoUrl, transcriptSource } = req.body;
 
         logger.info(`Processing video request: ${videoUrl}`);
+        logger.info(`Transcript source: ${transcriptSource || 'gemini (default)'}`);
 
         // Execute pipeline
-        const result = await processPipeline(videoUrl);
+        const result = await processPipeline(videoUrl, transcriptSource);
 
         // Return appropriate response
         if (result.success) {

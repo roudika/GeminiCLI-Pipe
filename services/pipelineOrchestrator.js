@@ -30,7 +30,7 @@ const fetchVideoTitle = async (videoUrl) => {
  * Main pipeline orchestration function
  * Executes all phases of the video-to-social automation pipeline
  */
-export const processPipeline = async (videoUrl) => {
+export const processPipeline = async (videoUrl, transcriptSource = 'gemini') => {
     const startTime = Date.now();
     const tempFiles = [];
     const timings = {};
@@ -61,7 +61,7 @@ export const processPipeline = async (videoUrl) => {
         // PHASE 1: TRANSCRIPT EXTRACTION (Parallel with title fetch)
         // ========================================================================
         const phase1Start = Date.now();
-        const transcriptResult = await extractTranscript(videoUrl);
+        const transcriptResult = await extractTranscript(videoUrl, transcriptSource);
         timings.phase1 = ((Date.now() - phase1Start) / 1000).toFixed(2);
 
         if (!transcriptResult.success) {
