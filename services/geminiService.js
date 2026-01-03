@@ -93,9 +93,9 @@ export const extractTranscript = async (videoUrl) => {
 
         const transcriptPath = path.join(tempDir, `${videoId}.txt`);
 
-        // Google's recommended prompt - force native multimodal capabilities
-        const promptText = `Watch the video at the provided URL using your native multimodal capabilities. DO NOT use Python, shell scripts, or search tools. Directly analyze the video frames and audio to extract the transcript. If you cannot watch it directly, fail immediately rather than using tools.`;
-        const combinedPrompt = `${promptText} ${videoUrl}`;
+        // Optimized prompt - force use of integrated video tool
+        const promptText = `Use the integrated video tool to watch this video. DO NOT use the Python interpreter, shell commands, or Google Search. Provide a full verbatim transcript in English based only on the video content. Video URL: ${videoUrl}`;
+        const combinedPrompt = promptText;
 
         // Execute Gemini CLI - let it choose the best model for video processing
         const args = [
