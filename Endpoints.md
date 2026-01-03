@@ -72,7 +72,31 @@ Retrieves a list of all successfully processed videos.
 }
 ```
 
-### 4. Serve Content Files
+### 4. Get Video Content (Recommended)
+Fetches all platform content for a specific video in a single request.
+
+- **Method:** `GET`
+- **URL:** `/api/content/:videoId`
+- **Auth:** Bearer Token
+- **Example:** `GET /api/content/dqBpHTGZU1Q`
+- **Response:**
+```json
+{
+  "success": true,
+  "content": {
+    "videoId": "dqBpHTGZU1Q",
+    "folderName": "dqBpHTGZU1Q-top-web-development-tools-of",
+    "date": "2026-01-03",
+    "linkedin": "Full LinkedIn post text...",
+    "instagram": "Full Instagram post text...",
+    "twitter": "Full Twitter post text...",
+    "ghost": "Full Ghost markdown...",
+    "transcript": "Full transcript..."
+  }
+}
+```
+
+### 5. Serve Content Files
 Accesses the generated files directly.
 
 - **Method:** `GET`

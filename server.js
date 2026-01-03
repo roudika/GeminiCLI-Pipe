@@ -11,7 +11,7 @@ import { authenticate } from './middleware/auth.js';
 import { validateProcessVideoRequest } from './utils/validators.js';
 import { logger } from './utils/logger.js';
 import { processPipeline } from './services/pipelineOrchestrator.js';
-import { getProcessingHistory } from './services/fileManager.js';
+import { getProcessingHistory, getVideoContent } from './services/fileManager.js';
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -119,6 +119,29 @@ app.get('/api/history', authenticate, async (req, res) => {
         res.status(500).json({
             success: false,
             error: 'Failed to retrieve history'
+        });
+    }
+});
+
+/**
+ * Content endpoint: Get all content for a specific video
+ * GET /api/content/:videoId
+ */
+app.get('/api/content/:videoId', authenticate, async (req, res) => {
+    try {
+        const { videoId } = req.params;
+        const result = await getVideoContent(videoId);
+
+        if (result.success) {
+            res.json(result);
+        } else {
+            res.status(404).json(result);
+        }
+    } catch (error) {
+        logger.error('Error in /api/content/:videoId', error);
+        res.status(500).json({
+            success: false,
+            error: 'Failed to retrieve content'
         });
     }
 });

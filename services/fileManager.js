@@ -323,3 +323,69 @@ export const getProcessingHistory = async () => {
         return [];
     }
 };
+
+/**
+ * Get content for a specific video by ID
+ * @param {string} videoId - YouTube video ID
+ * @returns {Promise<{success: boolean, content?: object, error?: string}>}
+ */
+export const getVideoContent = async (videoId) => {
+    try {
+        const contentDir = path.join(process.cwd(), 'content');
+
+        // Search through date folders to find the video
+        const dates = await fs.readdir(contentDir);
+
+        for (const date of dates) {
+            const datePath = path.join(contentDir, date);
+            const stat = await fs.stat(datePath);
+
+            if (stat.isDirectory()) {
+                const folders = await fs.readdir(datePath);
+
+                // Find folder that starts with the video ID
+                const videoFolder = folders.find(f => f.startsWith(videoId));
+
+                if (videoFolder) {
+                    const videoPath = path.join(datePath, videoFolder);
+
+                    // Read all platform content
+                    const [linkedin, instagram, twitter, ghost, transcript] = await Promise.all([
+                        fs.readFile(path.join(videoPath, 'linkedin', 'post.txt'), 'utf-8').catch(() => null),
+                        fs.readFile(path.join(videoPath, 'instagram', 'post.txt'), 'utf-8').catch(() => null),
+                        fs.readFile(path.join(videoPath, 'twitter', 'post.txt'), 'utf-8').catch(() => null),
+                        fs.readFile(path.join(videoPath, 'ghost', 'post.md'), 'utf-8').catch(() => null),
+                        fs.readFile(path.join(videoPath, 'transcript.txt'), 'utf-8').catch(() => null)
+                    ]);
+
+                    return {
+                        success: true,
+                        content: {
+                            videoId,
+                            folderName: videoFolder,
+                            date,
+                            linkedin,
+                            instagram,
+                            twitter,
+                            ghost,
+                            transcript
+                        }
+                    };
+                }
+            }
+        }
+
+        return {
+            success: false,
+            error: `Video ${videoId} not found`
+        };
+
+    } catch (error) {
+        logger.error('Failed to get video content', error);
+        return {
+            success: false,
+            error: error.message
+        };
+    }
+};
+
