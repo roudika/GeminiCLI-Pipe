@@ -93,9 +93,9 @@ export const extractTranscript = async (videoUrl) => {
 
         const transcriptPath = path.join(tempDir, `${videoId}.txt`);
 
-        // Build prompt asking Gemini to save the transcript
-        // Guide it to check /scripts folder for transcript extraction tools
-        const promptText = `Watch this video and extract the full verbatim English transcript. Check the /scripts folder for transcript extraction tools if needed. Save the transcript to a file named "${videoId}.txt" in the current directory. Output ONLY the transcript text, no other commentary.`;
+        // Build prompt - explicitly tell Gemini to watch the video directly
+        // Do NOT check files or scripts - use Gemini's multimodal capabilities
+        const promptText = `Watch this video directly and extract the full verbatim English transcript. Do not check any files, scripts, or documentation. Just watch the video and provide the transcript.`;
         const combinedPrompt = `${promptText} ${videoUrl}`;
 
         // Execute Gemini CLI
