@@ -174,7 +174,7 @@ app.use((err, req, res, next) => {
 // SERVER STARTUP
 // ============================================================================
 
-app.listen(PORT, () => {
+app.listen(PORT, '0.0.0.0', () => {
     console.log('\n' + '='.repeat(80));
     console.log('🚀 Video-to-Social Automation Pipeline API Server');
     console.log('='.repeat(80));
