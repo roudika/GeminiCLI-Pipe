@@ -1,0 +1,295 @@
+# Social Media Content Generator - Unified Instructions
+# Optimized for Gemini API token efficiency
+
+[meta]
+version = "1.0"
+purpose = "Transform YouTube transcripts into platform-optimized social media content"
+brand = "KloudiHub"
+brand_url = "https://kloudihub.com"
+brand_tagline = "Hosts top rare LLM models that are hard to find anywhere else"
+
+[brand.social]
+instagram = "https://www.instagram.com/kloudihub/"
+linkedin = "https://linkedin.com/company/kloudihub"
+
+[brand.promotion]
+when_to_include = "AI, technology, or software-related content only"
+linkedin_format = "For latest rare AI models check out https://kloudihub.com"
+instagram_format = "🤖 For latest rare AI models check out https://kloudihub.com"
+twitter_format = "🤖 Latest rare AI models: https://kloudihub.com"
+
+# ============================================================================
+# GLOBAL RULES (Apply to all platforms)
+# ============================================================================
+
+[global]
+language = "English only"
+tone = "Professional, authoritative yet conversational"
+avoid_phrases = ["In the digital landscape", "Delve in", "In conclusion", "It's worth noting"]
+avoid_citations = true  # No [1], [4], [01:29] or timestamp markers
+avoid_generic_ai_language = true
+
+[global.content_quality]
+eliminate_fluff = true
+focus_on_actionable_insights = true
+use_concrete_examples = true
+avoid_corporate_jargon = true
+
+# ============================================================================
+# LINKEDIN
+# ============================================================================
+
+[linkedin]
+character_min = 1300
+character_max = 3000
+character_optimal = 1500
+hashtag_count_min = 3
+hashtag_count_max = 5
+
+[linkedin.structure]
+hook = "Strong, attention-grabbing opening (bold or impactful statement)"
+body_points = "2-4 key insights with emoji bullets"
+cta = "Clear call-to-action"
+link_format = "Read more: [URL]"
+link_placement = "After main content, before promotional footer"
+
+[linkedin.formatting]
+emoji_usage = "Moderate - for structure and emphasis"
+emoji_examples = ["🔹", "📊", "💡", "⚡", "🎯"]
+line_breaks = "Frequent - separate ideas with blank lines"
+paragraph_length = "2-3 sentences max"
+
+[linkedin.tone]
+style = "Professional, authoritative yet accessible, strategic"
+voice = "Active voice, varied sentence structures"
+
+[linkedin.output_format]
+header = "### 1. LinkedIn Post"
+separator = "---"
+
+# ============================================================================
+# INSTAGRAM
+# ============================================================================
+
+[instagram]
+character_min = 138
+character_max = 2200
+character_optimal = 150
+hashtag_count_min = 7
+hashtag_count_max = 8
+hashtag_placement_note = "Can be placed after content or in first comment"
+
+[instagram.structure]
+hook = "Punchy, personality-driven opening"
+body_points = "2-3 key highlights with emoji bullets"
+closing = "Engaging closing line"
+link_format = "🔗 Full story: [URL]"
+link_placement = "After main content, before promotional footer"
+
+[instagram.formatting]
+emoji_usage = "Liberal - for personality and visual appeal"
+emoji_examples = ["✅", "💪", "🎯", "☕", "💻", "🔥", "✨"]
+line_breaks = "Very frequent - 2-3 lines max per paragraph"
+paragraph_length = "2-3 lines max"
+
+[instagram.tone]
+style = "Dynamic, creative, conversational yet authoritative"
+voice = "High-energy, modern, engaging"
+
+[instagram.output_format]
+header = "### 2. Instagram Post"
+separator = "---"
+
+# ============================================================================
+# TWITTER
+# ============================================================================
+
+[twitter]
+character_min = 600
+character_max = 1200
+character_optimal = 800
+hashtag_count_min = 2
+hashtag_count_max = 3
+
+[twitter.structure]
+hook = "Bold opening statement or provocative question"
+body = "3-4 short paragraphs or bulleted insights"
+takeaway = "1-sentence wrap-up explaining why this matters"
+link_format = "[URL]"
+link_placement = "At the very end after hashtags"
+
+[twitter.formatting]
+emoji_usage = "Minimal - one unique emoji per post for visual flair"
+emoji_variety = "Use different emoji each time, avoid repetition"
+line_breaks = "Frequent - at least one every 2-3 sentences"
+paragraph_length = "2-3 sentences max"
+
+[twitter.tone]
+style = "Professional, enthusiastic, modern"
+voice = "Authoritative yet engaging, value-driven, concise"
+
+[twitter.quality_control]
+avoid_clickbait = true
+accurate_summary = true
+verify_character_count = true
+
+[twitter.output_format]
+header = "### 3. Twitter Post"
+separator = "---"
+
+# ============================================================================
+# GHOST BLOG
+# ============================================================================
+
+[ghost]
+word_count_min = 1200
+word_count_max = 1800
+word_count_optimal = 1500
+
+[ghost.seo]
+meta_title_max = 60
+meta_description_max = 155
+url_slug_format = "kebab-case-keyword-slug"
+tag_count = 3
+
+[ghost.structure]
+sections = ["Key Takeaways", "Introduction", "Main Body (2-3 sections)", "Conclusion", "FAQ"]
+key_takeaways_format = "Blockquote with 3 bullet points"
+faq_questions = 2
+
+[ghost.markdown_rules]
+h1_usage = "NEVER in body - Title field becomes H1"
+h2_usage = "## for main section headings"
+h3_usage = "### for subsections"
+bold_usage = "**bold** for key terms"
+italic_usage = "*italics* for emphasis"
+code_usage = "`code` for technical terms"
+list_format = "- for bullets, 1. for numbered"
+
+[ghost.formatting]
+paragraph_length = "2-3 sentences"
+readability = "Short paragraphs, bullet points, numbered lists"
+no_image_placeholders = true
+no_video_embeds = true
+
+[ghost.frontmatter]
+format = "Key: Value (NO bullets, NO bold markers)"
+required_fields = ["Meta Title", "Title", "Excerpt", "Meta Description", "Image Prompt", "Tags"]
+optional_fields = ["URL Slug"]
+
+[ghost.frontmatter_rules]
+write_actual_content = true  # NOT instructions like "Recommended: 60 characters"
+example_correct = "Meta Title: How to Build Amazing Apps"
+example_wrong = "Meta Title: Recommended: 60 characters"
+
+[ghost.brand_integration]
+mention_when = "Discussing LLM models, AI APIs, or model access"
+placement = "Conclusion section as call-to-action"
+tone = "Helpful and informative, not overly salesy"
+cta_example = "Explore these models hands-on at Kloudihub.com's playground, or integrate them via our API. Follow us on Instagram and LinkedIn for the latest AI insights."
+
+[ghost.output_format]
+header = "### 4. Ghost Blog Post"
+frontmatter_start = "--- START FRONTMATTER ---"
+frontmatter_end = "--- END FRONTMATTER ---"
+body_start = "--- START BODY ---"
+body_end = "--- END BODY ---"
+separator = "---"
+
+# ============================================================================
+# IMAGE GENERATION PROMPTS
+# ============================================================================
+
+[image_prompt]
+required_elements = ["Subject", "Art Style", "Lighting/Mood", "Composition", "Aspect Ratio"]
+
+[image_prompt.guidelines]
+subject = "Clear description of main visual element"
+art_style = "Specific style direction (e.g., 'Minimalist 3D isometric', 'Photorealistic', 'Cinematic illustration')"
+lighting_mood = "Atmosphere and lighting (e.g., 'Soft ambient glow', 'Dramatic lighting')"
+composition = "View angle and framing (e.g., 'Low-angle close-up', 'Wide shot')"
+aspect_ratio_vertical = "--ar 4:5"
+aspect_ratio_landscape = "--ar 16:9"
+
+[image_prompt.output_format]
+header = "### 5. Image Generation Prompt"
+separator = "---"
+
+# ============================================================================
+# PARSING & VALIDATION
+# ============================================================================
+
+[validation.linkedin]
+checklist = [
+    "Clear hook/opening",
+    "Source URL included ONCE",
+    "NO duplicate URLs",
+    "Character count within range",
+    "3-5 hashtags",
+    "Emojis contextually appropriate",
+    "Line breaks improve readability",
+    "Promotional footer only if AI/tech content",
+    "Section header matches exact format"
+]
+
+[validation.instagram]
+checklist = [
+    "Punchy hook",
+    "Source URL included ONCE",
+    "NO duplicate URLs",
+    "Character count within range",
+    "7-8 hashtags",
+    "Liberal emoji usage",
+    "Very short paragraphs",
+    "Promotional footer only if AI/tech content",
+    "Section header matches exact format"
+]
+
+[validation.twitter]
+checklist = [
+    "Bold hook",
+    "600-1200 characters",
+    "2-3 hashtags",
+    "Unique emoji used",
+    "Frequent line breaks",
+    "Link at the end",
+    "No clickbait",
+    "Accurate summary",
+    "Promotional footer only if AI/tech content"
+]
+
+[validation.ghost]
+checklist = [
+    "Frontmatter uses Key: Value format",
+    "Actual content written (not instructions)",
+    "Meta title under 60 chars",
+    "Meta description under 155 chars",
+    "No H1 in body",
+    "Proper markdown hierarchy",
+    "2-3 sentence paragraphs",
+    "No image placeholders in body",
+    "Kloudihub CTA in conclusion",
+    "FAQ section included"
+]
+
+# ============================================================================
+# WORKFLOW INSTRUCTIONS
+# ============================================================================
+
+[workflow]
+step_1 = "Analyze transcript: Extract core message, key insights, unique value propositions"
+step_2 = "Identify target audience and main takeaways"
+step_3 = "Determine if content is AI/tech-related (for promotional footer)"
+step_4 = "Generate LinkedIn post following structure and formatting rules"
+step_5 = "Generate Instagram post following structure and formatting rules"
+step_6 = "Generate Twitter post following structure and formatting rules"
+step_7 = "Generate Ghost blog post with frontmatter and body"
+step_8 = "Create detailed image generation prompt"
+step_9 = "Validate all outputs against checklists"
+step_10 = "Output in exact format with proper section headers and separators"
+
+[workflow.critical_rules]
+no_timestamps = "Remove all timestamp references like [01:23] from video transcripts"
+no_duplicate_urls = "Each URL appears exactly once per post"
+english_only = "All content must be in English"
+parser_compatibility = "Use exact section headers for automated parsing"

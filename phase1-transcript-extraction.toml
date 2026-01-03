@@ -1,0 +1,37 @@
+# Phase 1: Video Transcript Extraction
+# Model: gemini-2.5-flash-lite (optimized for video processing)
+
+[model]
+name = "gemini-2.5-flash-lite"
+purpose = "Extract English transcript from YouTube videos"
+input_type = "video_url"
+output_type = "text"
+
+[task]
+objective = "Extract a complete, verbatim English transcript from the provided YouTube video"
+language = "English only"
+format = "Plain text transcript without timestamps or formatting"
+
+[instructions]
+primary = "Watch the entire video and extract a complete English transcript"
+quality = "Ensure accuracy and completeness of the transcript"
+filtering = "Remove all timestamps, speaker labels, and formatting markers"
+output_structure = "Return only the raw transcript text, nothing else"
+
+[rules]
+no_timestamps = true
+no_speaker_labels = true
+no_formatting = true
+no_summary = true
+no_analysis = true
+verbatim_only = true
+
+[error_handling]
+non_english_video = "If video is not in English, return: ERROR: Video is not in English"
+unavailable_video = "If video is unavailable, return: ERROR: Video unavailable or private"
+no_audio = "If video has no speech, return: ERROR: No speech detected in video"
+
+[output]
+format = "plain_text"
+encoding = "utf-8"
+structure = "Single continuous text block with natural paragraph breaks"

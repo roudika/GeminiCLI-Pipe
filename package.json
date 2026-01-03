@@ -1,0 +1,29 @@
+{
+  "name": "gemini-cli-pipe",
+  "version": "1.0.0",
+  "description": "Video-to-Social Automation Pipeline API Server for KloudiHub",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node --watch server.js"
+  },
+  "keywords": [
+    "gemini",
+    "youtube",
+    "social-media",
+    "automation",
+    "kloudihub"
+  ],
+  "author": "KloudiHub",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

@@ -1,0 +1,260 @@
+# Phase 2: Social Media Content Generation
+# Model: gemini-3-flash (optimized for creative content generation)
+
+[model]
+name = "gemini-3-flash"
+purpose = "Generate platform-optimized social media content from video transcripts"
+input_type = "text_transcript"
+output_type = "structured_content"
+
+[task]
+objective = "Transform video transcript into engaging social media posts for LinkedIn, Instagram, Twitter, and Ghost blog"
+input_source = "English transcript from Phase 1"
+output_platforms = ["linkedin", "instagram", "twitter", "ghost"]
+
+# ============================================================================
+# GLOBAL SETTINGS
+# ============================================================================
+
+[global]
+language = "English only"
+tone = "Professional, authoritative yet conversational"
+avoid_phrases = ["In the digital landscape", "Delve in", "In conclusion", "It's worth noting"]
+avoid_citations = true
+avoid_timestamps = true
+avoid_generic_ai_language = true
+
+[global.brand]
+name = "KloudiHub"
+url = "https://kloudihub.com"
+tagline = "Hosts top rare LLM models that are hard to find anywhere else"
+instagram = "https://www.instagram.com/kloudihub/"
+linkedin = "https://linkedin.com/company/kloudihub"
+
+[global.brand.promotion]
+when = "AI, technology, or software-related content only"
+tone = "Helpful and informative, not overly salesy"
+
+# ============================================================================
+# LINKEDIN
+# ============================================================================
+
+[linkedin]
+character_min = 1300
+character_max = 3000
+character_optimal = 1500
+hashtag_count = "3-5"
+
+[linkedin.structure]
+hook = "Strong, attention-grabbing opening"
+body = "2-4 key insights with emoji bullets"
+cta = "Clear call-to-action"
+link_format = "Read more: [URL]"
+footer = "For latest rare AI models check out https://kloudihub.com"
+
+[linkedin.style]
+tone = "Professional, authoritative yet accessible"
+emoji_usage = "Moderate - structure and emphasis only"
+emoji_examples = ["🔹", "📊", "💡", "⚡", "🎯"]
+line_breaks = "Frequent - separate ideas with blank lines"
+
+[linkedin.output]
+header = "### 1. LinkedIn Post"
+separator = "---"
+
+# ============================================================================
+# INSTAGRAM
+# ============================================================================
+
+[instagram]
+character_min = 138
+character_max = 2200
+character_optimal = 150
+hashtag_count = "7-8"
+hashtag_note = "Can be placed after content or in first comment"
+
+[instagram.structure]
+hook = "Punchy, personality-driven opening"
+body = "2-3 key highlights with emoji bullets"
+closing = "Engaging closing line"
+link_format = "🔗 Full story: [URL]"
+footer = "🤖 For latest rare AI models check out https://kloudihub.com"
+
+[instagram.style]
+tone = "Dynamic, creative, conversational yet authoritative"
+emoji_usage = "Liberal - personality and visual appeal"
+emoji_examples = ["✅", "💪", "🎯", "☕", "💻", "🔥", "✨"]
+paragraph_length = "2-3 lines max"
+
+[instagram.output]
+header = "### 2. Instagram Post"
+separator = "---"
+
+# ============================================================================
+# TWITTER
+# ============================================================================
+
+[twitter]
+character_min = 600
+character_max = 1200
+character_optimal = 800
+hashtag_count = "2-3"
+
+[twitter.structure]
+hook = "Bold opening statement or provocative question"
+body = "3-4 short paragraphs or bulleted insights"
+takeaway = "1-sentence wrap-up"
+link_placement = "At the end after hashtags"
+footer = "🤖 Latest rare AI models: https://kloudihub.com"
+
+[twitter.style]
+tone = "Professional, enthusiastic, modern"
+emoji_usage = "Minimal - one unique emoji per post"
+line_breaks = "Frequent - every 2-3 sentences"
+
+[twitter.quality]
+avoid_clickbait = true
+accurate_summary = true
+verify_character_count = true
+
+[twitter.output]
+header = "### 3. Twitter Post"
+separator = "---"
+
+# ============================================================================
+# GHOST BLOG
+# ============================================================================
+
+[ghost]
+word_count_min = 1200
+word_count_max = 1800
+word_count_optimal = 1500
+
+[ghost.seo]
+meta_title_max = 60
+meta_description_max = 155
+url_slug_format = "kebab-case"
+tag_count = 3
+
+[ghost.structure]
+sections = ["Key Takeaways", "Introduction", "Main Body", "Conclusion", "FAQ"]
+key_takeaways = "Blockquote with 3 bullet points"
+faq_questions = 2
+
+[ghost.markdown]
+h1 = "NEVER in body - Title field becomes H1"
+h2 = "## for main sections"
+h3 = "### for subsections"
+bold = "**bold** for key terms"
+italic = "*italics* for emphasis"
+code = "`code` for technical terms"
+
+[ghost.frontmatter]
+format = "Key: Value (NO bullets, NO bold)"
+required = ["Meta Title", "Title", "Excerpt", "Meta Description", "Image Prompt", "Tags"]
+write_actual_content = true
+example_correct = "Meta Title: How to Build Amazing Apps"
+example_wrong = "Meta Title: Recommended: 60 characters"
+
+[ghost.brand]
+placement = "Conclusion section"
+cta = "Explore these models hands-on at Kloudihub.com's playground, or integrate them via our API. Follow us on Instagram and LinkedIn for the latest AI insights."
+
+[ghost.output]
+header = "### 4. Ghost Blog Post"
+frontmatter_start = "--- START FRONTMATTER ---"
+frontmatter_end = "--- END FRONTMATTER ---"
+body_start = "--- START BODY ---"
+body_end = "--- END BODY ---"
+separator = "---"
+
+# ============================================================================
+# IMAGE GENERATION PROMPT
+# ============================================================================
+
+[image_prompt]
+required = ["Subject", "Art Style", "Lighting/Mood", "Composition", "Aspect Ratio"]
+
+[image_prompt.guidelines]
+subject = "Clear description of main visual element"
+art_style = "Specific style (e.g., 'Minimalist 3D isometric', 'Photorealistic')"
+lighting = "Atmosphere (e.g., 'Soft ambient glow', 'Dramatic lighting')"
+composition = "View angle (e.g., 'Low-angle close-up', 'Wide shot')"
+aspect_ratio_vertical = "--ar 4:5"
+aspect_ratio_landscape = "--ar 16:9"
+
+[image_prompt.output]
+header = "### 5. Image Generation Prompt"
+separator = "---"
+
+# ============================================================================
+# VALIDATION RULES
+# ============================================================================
+
+[validation]
+no_duplicate_urls = "Each URL appears exactly once per post"
+no_timestamps = "Remove all [01:23] style references"
+english_only = "All content must be in English"
+parser_compatible = "Use exact section headers"
+
+[validation.linkedin]
+check = ["Hook present", "URL once", "3-5 hashtags", "1300-3000 chars", "Footer if AI/tech"]
+
+[validation.instagram]
+check = ["Punchy hook", "URL once", "7-8 hashtags", "Short paragraphs", "Footer if AI/tech"]
+
+[validation.twitter]
+check = ["Bold hook", "600-1200 chars", "2-3 hashtags", "Unique emoji", "Footer if AI/tech"]
+
+[validation.ghost]
+check = ["Frontmatter Key:Value", "Meta title <60", "Meta desc <155", "No H1 in body", "Kloudihub CTA"]
+
+# ============================================================================
+# WORKFLOW
+# ============================================================================
+
+[workflow]
+step_1 = "Analyze transcript: Extract core message and key insights"
+step_2 = "Identify target audience and main takeaways"
+step_3 = "Determine if AI/tech content (for promotional footer)"
+step_4 = "Generate LinkedIn post with structure and formatting"
+step_5 = "Generate Instagram post with structure and formatting"
+step_6 = "Generate Twitter post with structure and formatting"
+step_7 = "Generate Ghost blog with frontmatter and body"
+step_8 = "Create detailed image generation prompt"
+step_9 = "Validate all outputs against checklists"
+step_10 = "Format with exact headers and separators"
+
+# ============================================================================
+# OUTPUT FORMAT
+# ============================================================================
+
+[output]
+format = "structured_markdown"
+encoding = "utf-8"
+sections_order = ["linkedin", "instagram", "twitter", "ghost", "image_prompt"]
+section_separator = "---"
+
+[output.structure]
+example = """
+### 1. LinkedIn Post
+[content]
+---
+### 2. Instagram Post
+[content]
+---
+### 3. Twitter Post
+[content]
+---
+### 4. Ghost Blog Post
+--- START FRONTMATTER ---
+[frontmatter]
+--- END FRONTMATTER ---
+--- START BODY ---
+[body]
+--- END BODY ---
+---
+### 5. Image Generation Prompt
+[prompt]
+---
+"""
